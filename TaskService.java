@@ -26,6 +26,7 @@ public class TaskService {
             return;
         }
         for (Task task : tasks) {
+            System.out.println("--------------------------------");
             System.out.println(tasks);
         }
     }
