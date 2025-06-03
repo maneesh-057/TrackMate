@@ -1,5 +1,3 @@
-
-// #	Logic for CRUD operations (add, view, delete, update tasks).	Logic for CRUD operations (add, view, delete, update tasks).
 import java.util.*;
 
 public class TaskService {
@@ -13,21 +11,20 @@ public class TaskService {
     }
 
     public void addTask(Task task) {
-        System.out.println("************** Add TASK OPERATION **************");
+        System.out.println("************** ADD TASK OPERATION **************");
         tasks.add(task);
         fileHandler.writeTasks(tasks);
         System.out.println("✅ Task added successfully!");
     }
 
     public void viewTasks() {
-        System.out.println("************** View TASK OPERATION **************");
+        System.out.println("************** VIEW TASK OPERATION **************");
         if (tasks.isEmpty()) {
-            System.out.println("No tasks found.");
+            System.out.println("⚠️ No tasks found.");
             return;
         }
         for (Task task : tasks) {
-            System.out.println("--------------------------------");
-            System.out.println(tasks);
+            task.printTask();
         }
     }
 
@@ -35,60 +32,59 @@ public class TaskService {
         System.out.println("************** UPDATE TASK OPERATION **************");
         System.out.print("Enter the ID of the task to update: ");
         int id = sc.nextInt();
+        sc.nextLine(); // Consume newline
 
         boolean found = false;
         for (Task task : tasks) {
             if (task.getId() == id) {
                 System.out.print("Enter new title: ");
-                task.title = (sc.nextLine());
-
+                String newTitle = sc.nextLine();
                 System.out.print("Enter new description: ");
-                task.description = (sc.nextLine());
-
+                String newDescription = sc.nextLine();
                 System.out.print("Enter new due date (DD-MM-YYYY): ");
-                task.dueDate = (sc.nextLine());
+                String newDueDate = sc.nextLine();
 
-                System.out.print("Enter new status (Pending/In Progress/Completed): ");
-                task.isCompleted = true;
+                // Set updated values using getters/setters
+                // Entity names remain unchanged per your request
+                task.setCompleted(false); // Assume reset to not completed
+                task = new Task(task.getId(), newTitle, newDescription, newDueDate, false);
 
-                found = true;
+                tasks.set(tasks.indexOf(task), task);
                 fileHandler.writeTasks(tasks);
-                System.out.println("Changes saved successfully");
+                System.out.println("✅ Task updated successfully.");
+                found = true;
                 break;
             }
         }
 
         if (!found) {
-            System.out.println("Task not found with ID: " + id);
+            System.out.println("⚠️ Task not found with ID: " + id);
         }
-
-        fileHandler.writeTasks(tasks); // Save changes to file
     }
 
     public void deleteTask() {
-        System.out.println("************** DELETED TASK OPERATION **************");
-
+        System.out.println("************** DELETE TASK OPERATION **************");
         System.out.print("Enter the ID of the task to delete: ");
         int id = sc.nextInt();
 
-        boolean remove = false;
+        boolean removed = false;
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getId() == id) {
                 tasks.remove(i);
-                remove = true;
-                break; 
+                removed = true;
+                break;
             }
         }
 
-        if (remove) {
-            System.out.println("🗑️ Task deleted successfully.");
+        if (removed) {
             fileHandler.writeTasks(tasks);
+            System.out.println("🗑️ Task deleted successfully.");
         } else {
-            System.out.println("Task not found with ID: " + id);
+            System.out.println("⚠️ Task not found with ID: " + id);
         }
     }
 
     public int generateTaskId() {
-        return (tasks.size() + 1);
+        return tasks.size() + 1;
     }
 }
